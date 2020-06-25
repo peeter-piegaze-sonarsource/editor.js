@@ -279,6 +279,18 @@ export function isClass(fn: any): boolean {
 }
 
 /**
+ * Test function
+ *
+ * @param {Function} fn - function to check
+ *
+ * @returns {boolean}
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function testo(fn: any): boolean {
+  return typeof fn === 'function' && /^\s*class\s+/.test(fn.toString());
+}
+
+/**
  * Checks if object is empty
  *
  * @param {object} object - object to check
