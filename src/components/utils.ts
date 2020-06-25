@@ -278,6 +278,8 @@ export function isClass(fn: any): boolean {
   return typeof fn === 'function' && /^\s*class\s+/.test(fn.toString());
 }
 
+// @SONAR_STOP@
+
 /**
  * Test function
  *
@@ -289,6 +291,8 @@ export function isClass(fn: any): boolean {
 export function testo(fn: any): boolean {
   return typeof fn === 'function' && /^\s*class\s+/.test(fn.toString());
 }
+
+// @SONAR_START@
 
 /**
  * Checks if object is empty
