@@ -251,3 +251,7 @@ Follow us on Twitter: [twitter.com/codex_team](https://twitter.com/codex_team)
 Feel free to contact: <a href="mailto:team@codex.so?subject=Editor.js feedback">team@codex.so</a>
 
 [codex.so](https://codex.so)
+
+### New section
+
+Add a new section to demonstrate commiting a change to the repo.
