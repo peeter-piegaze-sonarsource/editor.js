@@ -5,6 +5,15 @@ import * as _ from '../../utils';
 import SelectionUtils from '../../selection';
 
 /**
+ * HTML Elements that used for BlockSettings
+ */
+interface BlockSettingsNodes {
+  wrapper: HTMLElement;
+  toolSettings: HTMLElement;
+  defaultSettings: HTMLElement;
+}
+
+/**
  * Block Settings
  *
  *   ____ Settings Panel ____
@@ -15,13 +24,13 @@ import SelectionUtils from '../../selection';
  *  | ...................... |
  *  |________________________|
  */
-export default class BlockSettings extends Module {
+export default class BlockSettings extends Module<BlockSettingsNodes> {
   /**
    * Module Events
    *
    * @returns {{opened: string, closed: string}}
    */
-  public get events(): {opened: string; closed: string} {
+  public get events(): { opened: string; closed: string } {
     return {
       opened: 'block-settings-opened',
       closed: 'block-settings-closed',
@@ -33,7 +42,7 @@ export default class BlockSettings extends Module {
    *
    * @returns {{wrapper, wrapperOpened, toolSettings, defaultSettings, button}}
    */
-  public get CSS(): {[name: string]: string} {
+  public get CSS(): { [name: string]: string } {
     return {
       // Settings Panel
       wrapper: 'ce-settings',
@@ -56,15 +65,6 @@ export default class BlockSettings extends Module {
   public get opened(): boolean {
     return this.nodes.wrapper.classList.contains(this.CSS.wrapperOpened);
   }
-
-  /**
-   * Block settings UI HTML elements
-   */
-  public nodes: {[key: string]: HTMLElement} = {
-    wrapper: null,
-    toolSettings: null,
-    defaultSettings: null,
-  };
 
   /**
    * List of buttons
@@ -104,6 +104,21 @@ export default class BlockSettings extends Module {
   }
 
   /**
+   * Destroys module
+   */
+  public destroy(): void {
+    /**
+     * Sometimes (in read-only mode) there is no Flipper
+     */
+    if (this.flipper) {
+      this.flipper.deactivate();
+      this.flipper = null;
+    }
+
+    this.removeAllNodes();
+  }
+
+  /**
    * Open Block Settings pane
    */
   public open(): void {
@@ -119,6 +134,7 @@ export default class BlockSettings extends Module {
      * Highlight content of a Block we are working with
      */
     this.Editor.BlockManager.currentBlock.selected = true;
+    this.Editor.BlockSelection.clearCache();
 
     /**
      * Fill Tool's settings
@@ -131,7 +147,7 @@ export default class BlockSettings extends Module {
     this.addDefaultSettings();
 
     /** Tell to subscribers that block settings is opened */
-    this.Editor.Events.emit(this.events.opened);
+    this.eventsDispatcher.emit(this.events.opened);
 
     this.flipper.activate(this.blockTunesButtons);
   }
@@ -155,12 +171,19 @@ export default class BlockSettings extends Module {
 
     this.selection.clearSaved();
 
+    /**
+     * Remove highlighted content of a Block we are working with
+     */
+    if (!this.Editor.CrossBlockSelection.isCrossBlockSelectionStarted && this.Editor.BlockManager.currentBlock) {
+      this.Editor.BlockManager.currentBlock.selected = false;
+    }
+
     /** Clear settings */
     this.nodes.toolSettings.innerHTML = '';
     this.nodes.defaultSettings.innerHTML = '';
 
     /** Tell to subscribers that block settings is closed */
-    this.Editor.Events.emit(this.events.closed);
+    this.eventsDispatcher.emit(this.events.closed);
 
     /** Clear cached buttons */
     this.buttons = [];
@@ -206,7 +229,7 @@ export default class BlockSettings extends Module {
    * Add Tool's settings
    */
   private addToolSettings(): void {
-    if (typeof this.Editor.BlockManager.currentBlock.tool.renderSettings === 'function') {
+    if (_.isFunction(this.Editor.BlockManager.currentBlock.tool.renderSettings)) {
       $.append(this.nodes.toolSettings, this.Editor.BlockManager.currentBlock.tool.renderSettings());
     }
   }

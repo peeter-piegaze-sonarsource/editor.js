@@ -28,6 +28,9 @@
   </div>
   <div class="ce-example__content _ce-example__content--small">
     <div id="editorjs"></div>
+    <div id="hint-core" style="text-align: center;">
+      No core bundle file found. Run <code class="inline-code">yarn build</code>
+    </div>
 
     <div class="ce-example__button" id="saveButton">
       editor.save()
@@ -44,7 +47,7 @@
 
 <!-- Load Tools -->
 <script src="https://cdn.jsdelivr.net/npm/@editorjs/header@latest"></script><!-- Header -->
-<script src="https://cdn.jsdelivr.net/npm/@editorjs/simple-image@latest"></script><!-- Image -->
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/image@latest"></script><!-- Image -->
 <script src="https://cdn.jsdelivr.net/npm/@editorjs/delimiter@latest"></script><!-- Delimiter -->
 <script src="https://cdn.jsdelivr.net/npm/@editorjs/list@latest"></script><!-- List -->
 <script src="https://cdn.jsdelivr.net/npm/@editorjs/checklist@latest"></script><!-- Checklist -->
@@ -58,7 +61,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@editorjs/inline-code@latest"></script><!-- Inline Code -->
 
 <!-- Load Editor.js's Core -->
-<script src="../dist/editor.js"></script>
+<script src="../dist/editor.js" onload="document.getElementById('hint-core').hidden = true"></script>
 
 <!-- Initialization -->
 <script>
@@ -81,6 +84,11 @@
      * Tools list
      */
     tools: {
+      paragraph: {
+        config: {
+          placeholder: "Enter something"
+        }
+      },
       /**
        * Each Tool is a Plugin. Pass them via 'class' option with necessary settings {@link docs/tools.md}
        */
@@ -96,7 +104,7 @@
       /**
        * Or pass class directly without any configuration
        */
-      image: SimpleImage,
+      image: ImageTool,
 
       list: {
         class: List,
@@ -209,6 +217,7 @@
           "Bold": "Полужирный",
           "Italic": "Курсив",
           "InlineCode": "Моноширинный",
+          "Image": "Картинка"
         },
 
         /**
@@ -235,6 +244,32 @@
            */
           "stub": {
             'The block can not be displayed correctly.': 'Блок не может быть отображен'
+          },
+          "image": {
+            "Caption": "Подпись",
+            "Select an Image": "Выберите файл",
+            "With border": "Добавить рамку",
+            "Stretch image": "Растянуть",
+            "With background": "Добавить подложку",
+          },
+          "code": {
+            "Enter a code": "Код",
+          },
+          "linkTool": {
+            "Link": "Ссылка",
+            "Couldn't fetch the link data": "Не удалось получить данные",
+            "Couldn't get this link data, try the other one": "Не удалось получить данные по ссылке, попробуйте другую",
+            "Wrong response format from the server": "Неполадки на сервере",
+          },
+          "header": {
+            "Header": "Заголовок",
+          },
+          "paragraph": {
+            "Enter something": "Введите текст"
+          },
+          "list": {
+            "Ordered": "Нумерованный",
+            "Unordered": "Маркированный",
           }
         },
 
@@ -354,7 +389,9 @@
         {
           type: 'image',
           data: {
-            url: 'assets/codex2x.png',
+            file : {
+              url: 'assets/codex2x.png',
+            },
             caption: '',
             stretched: false,
             withBorder: true,

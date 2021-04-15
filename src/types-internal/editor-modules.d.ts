@@ -1,12 +1,9 @@
 import UI from '../components/modules/ui';
 import BlockEvents from '../components/modules/blockEvents';
-import Listeners from '../components/modules/listeners';
 import Toolbar from '../components/modules/toolbar/index';
 import InlineToolbar from '../components/modules/toolbar/inline';
 import Toolbox from '../components/modules/toolbar/toolbox';
 import BlockSettings from '../components/modules/toolbar/blockSettings';
-import Events from '../components/modules/events';
-import Shortcuts from '../components/modules/shortcuts';
 import Paste from '../components/modules/paste';
 import Notifier from '../components/modules/notifier';
 import Tooltip from '../components/modules/tooltip';
@@ -35,6 +32,8 @@ import InlineToolbarAPI from '../components/modules/api/inlineToolbar';
 import CrossBlockSelection from '../components/modules/crossBlockSelection';
 import ConversionToolbar from '../components/modules/toolbar/conversion';
 import TooltipAPI from '../components/modules/api/tooltip';
+import ReadOnly from '../components/modules/readonly';
+import ReadOnlyAPI from '../components/modules/api/readonly';
 import I18nAPI from '../components/modules/api/i18n';
 
 export interface EditorModules {
@@ -42,14 +41,11 @@ export interface EditorModules {
   BlockEvents: BlockEvents;
   BlockSelection: BlockSelection;
   RectangleSelection: RectangleSelection;
-  Listeners: Listeners;
   Toolbar: Toolbar;
   InlineToolbar: InlineToolbar;
   Toolbox: Toolbox;
   BlockSettings: BlockSettings;
   ConversionToolbar: ConversionToolbar;
-  Events: Events;
-  Shortcuts: Shortcuts;
   Paste: Paste;
   DragNDrop: DragNDrop;
   ModificationsObserver: ModificationsObserver;
@@ -75,5 +71,7 @@ export interface EditorModules {
   CrossBlockSelection: CrossBlockSelection;
   NotifierAPI: NotifierAPI;
   TooltipAPI: TooltipAPI;
+  ReadOnly: ReadOnly;
+  ReadOnlyAPI: ReadOnlyAPI;
   I18nAPI: I18nAPI;
 }

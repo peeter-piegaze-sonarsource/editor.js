@@ -28,11 +28,23 @@
     </div>
     <div class="ce-example__content _ce-example__content--small">
       <div id="editorjs"></div>
-      <div id="hint" style="text-align: center;">
+      <div id="hint-core" style="text-align: center;">
+        No core bundle file found. Run <code class="inline-code">yarn build</code>
+      </div>
+      <div id="hint-tools" style="text-align: center;">
         No submodules found. Run <code class="inline-code">yarn pull_tools</code>
       </div>
       <div class="ce-example__button" id="saveButton">
         editor.save()
+      </div>
+      <div class="ce-example__statusbar">
+        Readonly:
+        <b id="readonly-state">
+          Off
+        </b>
+        <div class="ce-example__statusbar-button" id="toggleReadOnlyButton">
+          toggle
+        </div>
       </div>
     </div>
     <div class="ce-example__output">
@@ -53,7 +65,7 @@
    Read more in Tool's README file. For example:
    https://github.com/editor-js/header#installation
    -->
-  <script src="./tools/header/dist/bundle.js" onload="document.getElementById('hint').hidden = true"></script><!-- Header -->
+  <script src="./tools/header/dist/bundle.js" onload="document.getElementById('hint-tools').hidden = true"></script><!-- Header -->
   <script src="./tools/simple-image/dist/bundle.js"></script><!-- Image -->
   <script src="./tools/delimiter/dist/bundle.js"></script><!-- Delimiter -->
   <script src="./tools/list/dist/bundle.js"></script><!-- List -->
@@ -70,24 +82,32 @@
   <script src="./tools/inline-code/dist/bundle.js"></script><!-- Inline Code -->
 
   <!-- Load Editor.js's Core -->
-  <script src="../dist/editor.js"></script>
+  <script src="../dist/editor.js" onload="document.getElementById('hint-core').hidden = true;"></script>
 
   <!-- Initialization -->
   <script>
-    /**
-     * Saving button
-     */
-    const saveButton = document.getElementById('saveButton');
-
     /**
      * To initialize the Editor, create a new instance with configuration object
      * @see docs/installation.md for mode details
      */
     var editor = new EditorJS({
       /**
+       * Enable/Disable the read only mode
+       */
+      readOnly: false,
+
+      /**
        * Wrapper of Editor
        */
       holder: 'editorjs',
+
+      /**
+       * Common Inline Toolbar settings
+       * - if true (or not specified), the order from 'tool' property will be used
+       * - if an array of tool names, this order will be used
+       */
+      // inlineToolbar: ['link', 'marker', 'bold', 'italic'],
+      // inlineToolbar: true,
 
       /**
        * Tools list
@@ -98,7 +118,7 @@
          */
         header: {
           class: Header,
-          inlineToolbar: ['link'],
+          inlineToolbar: ['marker', 'link'],
           config: {
             placeholder: 'Header'
           },
@@ -167,7 +187,7 @@
       /**
        * This Tool will be used as default
        */
-      // initialBlock: 'paragraph',
+      // defaultBlock: 'paragraph',
 
       /**
        * Initial Editor data
@@ -279,14 +299,37 @@
       },
     });
 
+    /**
+     * Saving button
+     */
+    const saveButton = document.getElementById('saveButton');
+
+    /**
+     * Toggle read-only button
+     */
+    const toggleReadOnlyButton = document.getElementById('toggleReadOnlyButton');
+    const readOnlyIndicator = document.getElementById('readonly-state');
 
     /**
      * Saving example
      */
     saveButton.addEventListener('click', function () {
-      editor.save().then((savedData) => {
-        cPreview.show(savedData, document.getElementById("output"));
-      });
+      editor.save()
+        .then((savedData) => {
+          cPreview.show(savedData, document.getElementById("output"));
+        })
+        .catch((error) => {
+          console.error('Saving error', error);
+        });
+    });
+
+    /**
+     * Toggle read-only example
+     */
+    toggleReadOnlyButton.addEventListener('click', async () => {
+      const readOnlyState = await editor.readOnly.toggle();
+
+      readOnlyIndicator.textContent = readOnlyState ? 'On' : 'Off';
     });
   </script>
 </body>
